@@ -7,9 +7,16 @@
 <a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
 </p>
 
-## About Laravel
+## About JobBoard
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+JobBoard is a simple and spicialized way to post jobs for candidates to apply for , its very efficent solution and most to be one way idea to help employers to finish there jobs and end it:
+
+## Our Team 
+- Moataz Noaman
+- Mariam Sameh
+- Maha Galal
+- Alyaa Mahmoud
+- Hager 
 
 - [Simple, fast routing engine](https://laravel.com/docs/routing).
 - [Powerful dependency injection container](https://laravel.com/docs/container).
