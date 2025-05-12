@@ -19,8 +19,7 @@ class EmployerController extends Controller
 {
     public function register(EmployerRegistrationRequest $request)
     {
-        print_r($request->all());
-        $validated = $request->validate(); 
+        $validated = $request->validated();
 
         $user = User::create([
             'name' => $request->name,
@@ -28,7 +27,7 @@ class EmployerController extends Controller
             'password' => Hash::make($request->password),
             'user_type' => 'employer',
         ]);
-
+    
         $employer = Employer::create([
             'user_id' => $user->id,
             'company_name' => $request->company_name,
@@ -37,15 +36,16 @@ class EmployerController extends Controller
             'industry' => $request->industry,
             'company_size' => $request->company_size,
         ]);
-
+    
         if ($request->hasFile('logo')) {
             $path = $request->file('logo')->store('logos', 'public');
             $employer->update(['logo' => $path]);
         }
-
+    
         Auth::login($user);
-
-        return to_route('employer.dashboard')->with('success', 'Registration successful!');
+    
+        return redirect()->route('employer.jobs')->with('success', 'Registration successful!');
+    
     }
 
     /**

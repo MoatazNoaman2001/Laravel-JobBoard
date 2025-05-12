@@ -33,8 +33,13 @@ class EmployerRegistrationRequest extends FormRequest
                 'max:255', 
                 'unique:'.User::class
             ],
-            'user_type' => ['required', 'in:employer'],
             'password' => ['required', 'confirmed', Password::defaults()],
+            'company_name' => ['required', 'string', 'max:255'],
+            'description' => ['nullable', 'string'],
+            'website' => ['nullable', 'url'],
+            'industry' => ['nullable', 'string'],
+            'company_size' => ['nullable', 'string'],
+            'logo' => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif', 'max:2048'],
         ];
     }
 }

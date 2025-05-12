@@ -52,7 +52,6 @@
                 </div>
             </fieldset>
 
-            <!-- Company Information -->
             <fieldset class="mb-5">
                 <legend class="h5 text-primary border-bottom pb-2">Company Information</legend>
 
@@ -139,7 +138,6 @@
 </div>
 
 <script>
-    // Logo preview functionality
     document.getElementById('logo').addEventListener('change', function(e) {
         const preview = document.getElementById('logoPreview');
         const file = e.target.files[0];

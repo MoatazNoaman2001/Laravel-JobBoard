@@ -51,15 +51,16 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'user_type' => 'string',
         ];
     }
 
-    public function employer(): HasOne
+    public function employer()
     {
         return $this->hasOne(Employer::class);
     }
 
-    public function candidate(): HasOne
+    public function candidate()
     {
         return $this->hasOne(Candidate::class);
     }
@@ -83,6 +84,7 @@ class User extends Authenticatable
     {
         return (string) Uuid::uuid4();
     }
+
     public function jobs()
     {
         return $this->hasManyThrough(
@@ -94,4 +96,6 @@ class User extends Authenticatable
             'id'
         );
     }
+
+    
 }

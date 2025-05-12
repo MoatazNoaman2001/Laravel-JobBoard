@@ -29,8 +29,8 @@ class AppServiceProvider extends ServiceProvider
             return Limit::perMinute(60)->by($request->user()?->id ?: $request->ip());
         });
 
-        Gate::define('update-job', function (User $user, Job $job) {
-            return $user->id === $job->user_id;
-        });
+        // Gate::define('update-job', function (User $user, Job $job) {
+        //     return $user->id === $job->user_id;
+        // });
     }
 }

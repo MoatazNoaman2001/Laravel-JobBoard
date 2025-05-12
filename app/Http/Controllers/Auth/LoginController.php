@@ -24,9 +24,9 @@ class LoginController extends Controller
             $request->session()->regenerate();
             
             if (auth()->user()->isEmployer()) {
-                return redirect()->intended('/employer/dashboard');
+                return redirect()->intended('/employer/jobs');
             } elseif (auth()->user()->isCandidate()) {
-                return redirect()->intended('/candidate/dashboard');
+                return redirect()->intended('/candidate/main');
             }
             
             return redirect()->intended('/dashboard');
@@ -39,6 +39,7 @@ class LoginController extends Controller
 
     public function logout(Request $request)
     {
+        print('logout');
         Auth::logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();

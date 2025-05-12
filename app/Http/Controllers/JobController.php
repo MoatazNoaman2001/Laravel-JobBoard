@@ -4,17 +4,20 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreJobRequest;
 use App\Http\Requests\UpdateJobRequest;
+use Illuminate\Http\Request;
 use App\Models\Job;
 use App\Models\Employer;
+use Illuminate\Support\Facades\Auth;
 
 class JobController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request ,$id)
     {
-        //
+        $job= Job::find($id);
+        return view('jobs.details', ['job'=>$job]);
     }
 
     /**
@@ -30,55 +33,56 @@ class JobController extends Controller
      */
     public function store(StoreJobRequest $request)
     {
-        $ips = $request->ips();
-        print_r($ips);
-        $data = $request->all();
-        print_r($data);
-        $name = $request->query('best movie');
         $validated = $request->validated();
-        print_r($validated);
-
-        if ($request->hasFile('logo')) {
-            $path = $request->file('logo')->store('company_logos', 'public');
-            $jobData['logo'] = $path;
+        $employer = Auth::user()->employer;
+        if (!$employer) {
+            return back()->with('error', 'only available for employer to post a job');
         }
-
+    
         $jobData = [
-            'employer_id' => Auth::id(),
+            'employer_id' => $employer->id,
             'title' => $validated['title'],
             'responsibilities' => $validated['responsibilities'],
-            'skills' => $validated['skills'],
-            'qualifications' => $validated['qualifications'],
-            'salary_range' => [
+            'skills' => json_encode($validated['skills']), // Convert array to JSON string
+            'qualifications' => json_encode($validated['qualifications']), // Convert array to JSON string
+            'salary_range' => json_encode([ // Convert array to JSON string
                 'min' => $validated['salary_range']['min'],
                 'max' => $validated['salary_range']['max']
-            ],
-            'benefits' => $validated['benefits'] ?? null,
-            'location' => [
+            ]),
+            'benefits' => isset($validated['benefits']) ? json_encode($validated['benefits']) : null,
+            'location' => json_encode([ // Convert array to JSON string
                 'address' => $validated['location']['address'],
                 'city' => $validated['location']['city'],
                 'state' => $validated['location']['state'],
                 'country' => $validated['location']['country'],
                 'postal_code' => $validated['location']['postal_code']
-            ],
+            ]),
             'work_type' => $validated['work_type'],
             'application_deadline' => $validated['application_deadline'],
         ];
-
+    
+        if ($request->hasFile('logo')) {
+            $path = $request->file('logo')->store('company_logos', 'public');
+            $jobData['logo'] = $path;
+        }
+    
         $job = Job::create($jobData);
-
+    
         return redirect()->route('jobs.show', $job->id)
             ->with('success', 'Job posted successfully!');
-
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(Request $request)
+    public function show(Job $job)
     {
-        $jobs = auth()->user()->jobs();
-        return view('employer.jobs', ['jobs' => $jobs]);
+        if (auth()->user()){
+            $jobs = auth()->user()->jobs()->get();
+            return view('employer.jobs', ['jobs' => $jobs]);
+        }else{
+            return view('employer.notRegister');
+        }
     }
 
     /**

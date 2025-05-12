@@ -7,10 +7,8 @@
 
     <title>{{ config('app.name', 'Laravel') }} - @yield('title')</title>
 
-    <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     
-    <!-- Custom CSS -->
     <style>
         .rounded-lg {
             border-radius: 1rem;
@@ -24,7 +22,20 @@
 </head>
 <body class="bg-light">
     <div class="container-fluid">
-        <!-- Navigation (Add your navbar component here) -->
+        @auth
+        <nav class="navbar navbar-light bg-light justify-content-between mx-4">
+            <a class="navbar-brand" href="#">
+                <img src="{{asset('images/user.png')}}" width="30" height="30" class="d-inline-block align-top" alt="">
+                {{auth()->user()->name}}
+            </a>
+            <form method="POST" action="{{route('employer.logout')}}">
+                @csrf
+                <button type="submit" class="btn btn-outline-secondary">
+                    Logout
+                </button>
+            </form>
+        </nav>
+        @endauth
         
         <main class="py-4">
             <div class="container">
@@ -36,8 +47,10 @@
             </div>
         </main>
     </div>
-
-    <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
+
+<script>
+
+</script>
