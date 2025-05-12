@@ -1,6 +1,10 @@
 <?php
 
+
 namespace App\Models;
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
+use Ramsey\Uuid\Uuid;
+
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -12,6 +16,8 @@ class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable, HasApiTokens;
+
+    use HasUuids;
 
     /**
      * The attributes that are mass assignable.
@@ -71,5 +77,21 @@ class User extends Authenticatable
     public function isCandidate(): bool
     {
         return $this->user_type === 'candidate';
+    }
+
+    public function newUniqueId(): string
+    {
+        return (string) Uuid::uuid4();
+    }
+    public function jobs()
+    {
+        return $this->hasManyThrough(
+            Job::class,
+            Employer::class,
+            'user_id',
+            'employer_id',
+            'id',
+            'id'
+        );
     }
 }

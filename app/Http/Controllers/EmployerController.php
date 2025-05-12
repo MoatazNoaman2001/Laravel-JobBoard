@@ -19,6 +19,9 @@ class EmployerController extends Controller
 {
     public function register(EmployerRegistrationRequest $request)
     {
+        print_r($request->all());
+        $validated = $request->validate(); 
+
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,

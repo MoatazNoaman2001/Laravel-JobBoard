@@ -3,6 +3,8 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rules\Password;
+use App\Models\User;
 
 class EmployerRegistrationRequest extends FormRequest
 {
@@ -22,7 +24,17 @@ class EmployerRegistrationRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'name' => ['required', 'string', 'max:255'],
+            'email' => [
+                'required', 
+                'string',
+                'lowercase',
+                'email', 
+                'max:255', 
+                'unique:'.User::class
+            ],
+            'user_type' => ['required', 'in:employer'],
+            'password' => ['required', 'confirmed', Password::defaults()],
         ];
     }
 }

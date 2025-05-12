@@ -8,7 +8,7 @@
         <div class="col-md-12">
             <div class="d-flex justify-content-between align-items-center mb-4">
                 <h2>Dashboard</h2>
-                <a href="{{ route('job_postings.create') }}" class="btn btn-primary">
+                <a href="{{ route('job.create') }}" class="btn btn-primary">
                     <i class="bi bi-plus-lg"></i> Post New Job
                 </a>
             </div>

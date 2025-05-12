@@ -5,6 +5,10 @@ namespace App\Providers;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\RateLimiter;
+use App\Models\Job;
+use App\Models\User;
+use Illuminate\Support\Facades\Gate;
+
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -23,6 +27,10 @@ class AppServiceProvider extends ServiceProvider
     {
         RateLimiter::for('api', function (Request $request){
             return Limit::perMinute(60)->by($request->user()?->id ?: $request->ip());
+        });
+
+        Gate::define('update-job', function (User $user, Job $job) {
+            return $user->id === $job->user_id;
         });
     }
 }
