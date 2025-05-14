@@ -28,7 +28,7 @@
                 <img src="{{asset('images/user.png')}}" width="30" height="30" class="d-inline-block align-top" alt="">
                 {{auth()->user()->name}}
             </a>
-            <form method="POST" action="{{route('employer.logout')}}">
+            <form method="GET" action="{{route('employer.logout')}}">
                 @csrf
                 <button type="submit" class="btn btn-outline-secondary">
                     Logout

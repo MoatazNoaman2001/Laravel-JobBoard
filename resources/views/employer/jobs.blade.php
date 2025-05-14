@@ -2,7 +2,7 @@
 
 @section('content')
 <div class="container py-5">
-    <p>{{auth()->user()}}</p>
+    {{-- <p>{{auth()->user()}}</p> --}}
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h1 class="fw-bold">Job Listings</h1>
         <a href="{{ route('jobs.create') }}" class="btn btn-primary btn-lg">
@@ -83,12 +83,19 @@
                                     </button>
                                 </form>
                                 <div>
-                                    <Button class="btn btn-outline-success btn-sm me-1">
-                                        Edit
-                                    </Button>
-                                    <Button class="btn btn-outline-danger btn-sm">
-                                        Delete
-                                    </Button>
+                                    <form method="GET" action="{{ route('jobs.edit', $job->id) }}" class="d-inline">
+                                        @csrf
+                                        <Button class="btn btn-outline-success btn-sm me-1">
+                                            Edit
+                                        </Button>
+                                    </form>
+                                    <form method="POST" action="{{ route('jobs.destroy', $job->id) }}" class="d-inline">
+                                        @csrf
+                                        @method('DELETE')
+                                        <Button class="btn btn-outline-danger btn-sm">
+                                            Delete
+                                        </Button>
+                                    </form>
                                     
                                 </div>
                             </div>

@@ -49,6 +49,9 @@
                         <div class="mb-3">
                             <p><a class="link-offset-2 link-underline link-underline-opacity-50" href="employer/register">Register as Employer</a></p>
                         </div>
+                        <div class="mb-3">
+                            <p><a class="link-offset-2 link-underline link-underline-opacity-50" href="condidate/register">Register as Condidate</a></p>
+                        </div>
 
                         <div class="d-grid mb-3">
                             <button type="submit" class="btn btn-primary btn-lg">

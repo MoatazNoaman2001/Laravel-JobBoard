@@ -88,9 +88,10 @@ class JobController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Job $job)
+    public function edit($id)
     {
-        //
+        $job = Job::find($id);
+        return view('employer.editJob', ['job' => $job]);
     }
 
     /**
@@ -98,7 +99,46 @@ class JobController extends Controller
      */
     public function update(UpdateJobRequest $request, Job $job)
     {
-        //
+        $validated = $request->validated();
+        $id= $request->route('id');
+        $job=Job::find($id);
+        if (!$job) {
+            return back()->with('error', 'Job not found');
+        }
+        $employer = Auth::user()->employer;
+        if (!$employer) {
+            return back()->with('error', 'only available for employer to post a job');
+        }
+    
+        $jobData = [
+            'employer_id' => $employer->id,
+            'title' => $validated['title'],
+            'responsibilities' => $validated['responsibilities'],
+            'skills' => json_encode($validated['skills']),
+            'qualifications' => json_encode($validated['qualifications']),
+            'salary_range' => json_encode([
+                'min' => $validated['salary_range']['min'],
+                'max' => $validated['salary_range']['max']
+            ]),
+            'benefits' => isset($validated['benefits']) ? json_encode($validated['benefits']) : null,
+            'location' => json_encode([
+                'address' => $validated['location']['address'],
+                'city' => $validated['location']['city'],
+                'state' => $validated['location']['state'],
+                'country' => $validated['location']['country'],
+                'postal_code' => $validated['location']['postal_code']
+            ]),
+            'work_type' => $validated['work_type'],
+            'application_deadline' => $validated['application_deadline'],
+        ];
+    
+        if ($request->hasFile('logo')) {
+            $path = $request->file('logo')->store('company_logos', 'public');
+            $jobData['logo'] = $path;
+        }
+        $job->update($jobData);
+        return redirect()->route('jobs.show', $job->id)
+            ->with('success', 'Job updated successfully!');
     }
 
     /**
@@ -106,6 +146,8 @@ class JobController extends Controller
      */
     public function destroy(Job $job)
     {
-        //
+        $job->delete();
+        return redirect()->route('employer.jobs')
+            ->with('success', 'Job deleted successfully!');
     }
 }
