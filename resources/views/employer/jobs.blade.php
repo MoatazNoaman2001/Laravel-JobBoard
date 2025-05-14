@@ -25,7 +25,7 @@
                             <div class="d-flex align-items-center">
                                 <div class="flex-shrink-0">
                                     <div class="bg-light rounded-circle d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
-                                        <i class="fas fa-briefcase text-primary fs-4"></i>
+                                        <img src="{{$job->logo}}" alt="">
                                     </div>
                                 </div>
                                 <div class="flex-grow-1 ms-3">

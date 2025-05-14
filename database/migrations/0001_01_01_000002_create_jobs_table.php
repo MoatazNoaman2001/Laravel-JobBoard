@@ -12,6 +12,8 @@ return new class extends Migration
             $table->uuid('id')->primary();
             $table->foreignId('employer_id')->constrained()->onDelete('cascade');
             $table->string('title', 255);
+            $table->string('country', 100)->nullabel();
+            $table->json('experience_level_range');
             $table->text('responsibilities');
             $table->json('skills');
             $table->json('qualifications');

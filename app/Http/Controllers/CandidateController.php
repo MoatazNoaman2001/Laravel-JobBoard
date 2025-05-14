@@ -16,7 +16,7 @@ class CandidateController extends Controller
 {
     public function searchJobs(Request $request)
     {
-        $query = Job::where('approved', true);
+        $query = Job::query();
 
         if ($request->filled('keywords')) {
             $query->where(function ($q) use ($request) {

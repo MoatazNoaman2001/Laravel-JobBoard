@@ -38,19 +38,26 @@ class JobController extends Controller
         if (!$employer) {
             return back()->with('error', 'only available for employer to post a job');
         }
-    
+        print_r($request->all());
+        print_r($validated);
+
         $jobData = [
             'employer_id' => $employer->id,
             'title' => $validated['title'],
             'responsibilities' => $validated['responsibilities'],
-            'skills' => json_encode($validated['skills']), // Convert array to JSON string
-            'qualifications' => json_encode($validated['qualifications']), // Convert array to JSON string
-            'salary_range' => json_encode([ // Convert array to JSON string
+            'skills' => json_encode($validated['skills']),
+            'qualifications' => json_encode($validated['qualifications']),
+            'salary_range' => json_encode([
                 'min' => $validated['salary_range']['min'],
                 'max' => $validated['salary_range']['max']
             ]),
+            'experience_level_range' => json_encode([
+                'min' => $validated['exp_range']['min'],
+                'max' => $validated['exp_range']['max']
+            ]),
+            'country' => $validated['location']['country'],
             'benefits' => isset($validated['benefits']) ? json_encode($validated['benefits']) : null,
-            'location' => json_encode([ // Convert array to JSON string
+            'location' => json_encode([
                 'address' => $validated['location']['address'],
                 'city' => $validated['location']['city'],
                 'state' => $validated['location']['state'],
@@ -120,6 +127,11 @@ class JobController extends Controller
                 'min' => $validated['salary_range']['min'],
                 'max' => $validated['salary_range']['max']
             ]),
+            'experience_level_range' => json_encode([
+                'min' => $validated['exp_range']['min'],
+                'max' => $validated['exp_range']['max']
+            ]),
+            'country' => $validated['location']['country'],
             'benefits' => isset($validated['benefits']) ? json_encode($validated['benefits']) : null,
             'location' => json_encode([
                 'address' => $validated['location']['address'],

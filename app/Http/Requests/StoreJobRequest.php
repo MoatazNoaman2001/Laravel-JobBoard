@@ -28,6 +28,8 @@ class StoreJobRequest extends FormRequest
             'qualifications' => 'required|array',
             'salary_range.min' => 'required|numeric',
             'salary_range.max' => 'required|numeric|gt:salary_range.min',
+            'exp_range.min' => 'required|numeric',
+            'exp_range.max' => 'required|numeric|gt:exp_range.min',
             'benefits' => 'nullable|array',
             'location.address' => 'required|string',
             'location.city' => 'required|string',

@@ -22,6 +22,8 @@ class Job extends Model
         'benefits',
         'location',
         'work_type',
+        'country',
+        'experience_level_range',
         'application_deadline',
         'logo'
     ];
@@ -36,6 +38,7 @@ class Job extends Model
             'salary_range' => 'array',
             'benefits' => 'array',
             'location' => 'array',
+            'experience_level_range' => 'array',
         ];
     }
 

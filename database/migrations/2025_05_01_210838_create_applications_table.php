@@ -12,14 +12,19 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('applications', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('job_id')->constrained()->onDelete('cascade');
-            $table->foreignId('candidate_id')->constrained()->onDelete('cascade');
+            $table->uuid('id')->primary();
+            $table->foreignUuid('job_id')->constrained()->onDelete('cascade');
+            $table->foreignUuid('candidate_id')->constrained('users')->onDelete('cascade');
             $table->text('cover_letter')->nullable();
-            $table->enum('status', ['pending', 'reviewed', 'accepted', 'rejected'])->default('pending');
+            $table->string('resume_path')->nullable();
+            $table->string('resume_filename')->nullable();
+            $table->enum('status', ['pending', 'reviewed', 'interview', 'accepted', 'rejected'])->default('pending');
             $table->timestamp('applied_at')->useCurrent();
-            $table->timestamps();
+            $table->timestamp('reviewed_at')->nullable();
+            $table->string('contact_email');
+            $table->string('contact_phone', 20)->nullable();
             $table->text('notes')->nullable();
+            $table->timestamps();
             
             $table->unique(['job_id', 'candidate_id']);
         });

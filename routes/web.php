@@ -5,9 +5,10 @@ use App\Http\Controllers\EmployerController;
 
 use App\Http\Controllers\JobController;
 use App\Http\Middleware\Employer;
-use App\Http\Middleware\Condidate;
+use App\Http\Middleware\Candidate;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\CandidateController;
+use App\Http\Controllers\ApplicationController;
 
 
 Route::get('/', function () {
@@ -48,14 +49,14 @@ Route::middleware(['auth', Employer::class])->group(function() {
     Route::get('/employer-dash' , [EmployerController::class, 'show'])->name('employer.dashboard'); 
 });
 
-Route::middleware(['auth', Condidate::class])->group(function() {
+Route::middleware(['auth', Candidate::class])->group(function() {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
     Route::get('/jobs', [CandidateController::class, 'searchJobs'])->name('candidate.jobs.index');
-    Route::get('/jobs/{job}/apply', [CandidateController::class, 'showApplyForm'])->name('candidate.jobs.apply');
-    Route::post('/jobs/{job}/apply', [CandidateController::class, 'applyJob'])->name('candidate.jobs.apply.store');
+    Route::get('/jobs/{job}/apply', [ApplicationController::class, 'create'])->name('candidate.jobs.apply');
+    Route::post('/jobs/{job}/apply', [ApplicationController::class, 'store'])->name('candidate.jobs.apply.store');
     Route::get('/candidate/applications', [CandidateController::class, 'applications'])->name('candidate.applications');
     Route::delete('/candidate/applications/{application}', [CandidateController::class, 'cancelApplication'])->name('candidate.applications.cancel');
     Route::get('/candidate/settings', [CandidateController::class, 'settings'])->name('candidate.settings');

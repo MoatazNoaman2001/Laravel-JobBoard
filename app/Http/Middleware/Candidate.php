@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Support\Facades\Auth;
 
-class Condidate
+class Candidate
 {
     /**
      * Handle an incoming request.
@@ -17,7 +17,7 @@ class Condidate
     public function handle(Request $request, Closure $next): Response
     {
         $user = Auth::user();
-        if (!$user || $user->user_type !== "condidate"){
+        if (!$user || $user->user_type !== "candidate"){
             return redirect('/login');
         }
         return $next($request);
