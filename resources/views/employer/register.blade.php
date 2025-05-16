@@ -11,6 +11,7 @@
     <div class="card-body">
         <form method="POST" action="{{ route('register.employer') }}" enctype="multipart/form-data">
             @csrf
+            <input type="hidden" name="user_type" value="employer">
 
             <!-- Account Information -->
             <fieldset class="mb-5">
@@ -49,9 +50,21 @@
                         <input type="password" class="form-control" 
                                id="password_confirmation" name="password_confirmation" required>
                     </div>
+
+                    <div class="col-md-6">
+                        <label for="image" class="form-label">Your Photo</label>
+                        <input type="file" class="form-control @error('image') is-invalid @enderror" 
+                               id="image" name="image" accept="image/*">
+                        @error('image')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                        <img src="#" alt="User Photo Preview" 
+                             class="mt-3 rounded-circle w-25 d-block" id="userImagePreview" style="display: none;">
+                    </div>
                 </div>
             </fieldset>
 
+            <!-- Company Information -->
             <fieldset class="mb-5">
                 <legend class="h5 text-primary border-bottom pb-2">Company Information</legend>
 
@@ -72,16 +85,6 @@
                         @error('description')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
-                    </div>
-
-                    <div class="col-md-6">
-                        <label for="logo" class="form-label">Company Logo</label>
-                        <input type="file" class="form-control @error('logo') is-invalid @enderror" 
-                               id="logo" name="logo" accept="image/*">
-                        @error('logo')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
-                        <img src="#" alt="Logo Preview" class="mt-2 company-logo-preview" id="logoPreview">
                     </div>
 
                     <div class="col-md-6">
@@ -138,8 +141,8 @@
 </div>
 
 <script>
-    document.getElementById('logo').addEventListener('change', function(e) {
-        const preview = document.getElementById('logoPreview');
+    document.getElementById('image').addEventListener('change', function(e) {
+        const preview = document.getElementById('userImagePreview');
         const file = e.target.files[0];
         const reader = new FileReader();
 

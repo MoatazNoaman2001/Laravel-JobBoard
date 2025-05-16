@@ -48,6 +48,10 @@ class Job extends Model
         return $this->hasMany(Application::class);
     }
 
+    public function isNew(){
+        return $this->created_at->diffInDays(now()) <= 30;
+    }
+    
     public function employer() {
         return $this->belongsTo(Employer::class , 'employer_id');
     }

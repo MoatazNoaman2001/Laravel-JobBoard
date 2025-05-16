@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use App\Models\Job;
 use App\Models\Employer;
 use App\Models\User;
+use App\Models\Application;
 use Illuminate\Support\Facades\Auth;
 use App\Notifications\NewJobPosted;
 
@@ -19,7 +20,8 @@ class JobController extends Controller
     public function index(Request $request ,$id)
     {
         $job= Job::find($id);
-        return view('jobs.details', ['job'=>$job]);
+        $statusOptions = Application::statusOptions();
+        return view('jobs.details', ['job'=>$job, 'statusOptions' => $statusOptions]);
     }
 
     /**

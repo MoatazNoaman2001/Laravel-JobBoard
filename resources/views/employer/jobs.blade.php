@@ -8,6 +8,19 @@
             <i class="fas fa-plus me-2"></i> Post New Job
         </a>
     </div>
+    @if(session('error'))
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            {{ session('error') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    @endif
+    
+    @if(session('success'))
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            {{ session('success') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    @endif
 
     @if($jobs->isEmpty())
         <div class="alert alert-info text-center py-4">
@@ -24,8 +37,9 @@
                     $salary = json_decode($job->salary_range, true) ?? ['min' => 'N/A', 'max' => 'N/A'];
                 @endphp
                 <div style="width: 100%; max-width: 600px;">
+
                     <div class="card h-100 border-0 shadow-sm hover-shadow transition-all p-4">
-                        <div class="card-header bg-white border-0 pb-0">
+                    <div class="card-header bg-white border-0 pb-0">
                             <div class="d-flex align-items-center">
                                 <div class="flex-shrink-0">
                                     <div class="bg-light rounded-circle d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
@@ -129,7 +143,18 @@
 </div>
 
 <style>
+<<<<<<< HEAD
     .card {
+=======
+    .hover-shadow:hover {
+        box-shadow: 0 0.5rem 1.5rem rgba(0, 0, 0, 0.1);
+        transform: translateY(-2px);
+    }
+    .transition-all {
+        transition: all 0.3s ease;
+    }
+    /* .card {
+>>>>>>> 966d7076843b7a6ab0b9ef7552a0f108c2f7da41
         border-radius: 12px !important;
         overflow: hidden !important;
         box-shadow: 0 0.50rem 1rem rgba(0, 0, 0, 0.2);
@@ -141,6 +166,11 @@
     .card:hover {
         box-shadow: 0 0.75rem 1.5rem rgba(0, 0, 0, 0.2);
         transform: translateY(-4px) !important;
+<<<<<<< HEAD
     }
+=======
+        border-color: rgba(0, 0, 0, 0.5) !important;
+    } */
+>>>>>>> 966d7076843b7a6ab0b9ef7552a0f108c2f7da41
 </style>
 @endsection

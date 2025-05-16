@@ -215,8 +215,8 @@ class AdminController extends Controller
      */
     public function applications(Request $request)
     {
-        $query = Application::with(['job', 'candidate.user']);
-
+        $query = Application::with(['job', 'candidate.user']); // This assumes Application has candidate() relationship
+    
         // Apply search filter
         if ($request->has('search') && !empty($request->search)) {
             $search = $request->search;
@@ -229,28 +229,12 @@ class AdminController extends Controller
                 });
             });
         }
-
-        // Apply status filter
-        if ($request->has('status') && !empty($request->status)) {
-            $query->where('status', $request->status);
-        }
-
-        // Apply job filter
-        if ($request->has('job_id') && !empty($request->job_id)) {
-            $query->where('job_id', $request->job_id);
-        }
-
+        // Rest of your code remains the same...
         $applications = $query->orderBy('created_at', 'desc')->paginate(10);
-
-        // Get all jobs for the filter dropdown
         $jobs = Job::orderBy('title')->get();
-
-        // Preserve query parameters in pagination links
-        $applications->appends($request->all());
-
+        
         return view('admin.applications_new', compact('applications', 'jobs'));
     }
-
     /**
      * Display the specified application.
      */

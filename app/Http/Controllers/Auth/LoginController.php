@@ -26,7 +26,7 @@ class LoginController extends Controller
             if (auth()->user()->isEmployer()) {
                 return redirect()->intended('/employer/jobs');
             } elseif (auth()->user()->isCandidate()) {
-                return redirect()->intended('/jobs');
+                return redirect()->intended('/');
             }
             
             return redirect()->intended('/dashboard');

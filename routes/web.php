@@ -6,6 +6,7 @@ use App\Http\Controllers\EmployerController;
 use App\Http\Controllers\JobController;
 use App\Http\Middleware\Employer;
 use App\Http\Middleware\Candidate;
+use App\Http\Middleware\IsAdmin;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\CandidateController;
 use App\Http\Controllers\ApplicationController;
@@ -22,8 +23,8 @@ Route::get('/', function () {
         print('User is logged in');
         if ($user->user_type == 'employer'){
             return redirect()->route('employer.jobs');
-            }else if ($user->user_type == 'candidate'){
-                return redirect()->route('candidate.jobs.index');
+        }else if ($user->user_type == 'candidate'){
+            return redirect()->route('candidate.jobs.index');
         }if ($user->user_type === 'admin') {
             return redirect()->route('admin.dashboard');
         }
@@ -70,6 +71,10 @@ Route::middleware(['auth', Employer::class])->group(function() {
     Route::get('/employer/jobs/{id}/edit', [JobController::class, 'edit'])->name('jobs.edit');
     Route::put('/employer/jobs/{id}/edit', [JobController::class, 'update'])->name('jobs.update');
     Route::delete('/employer/jobs/{id}/delete', [JobController::class, 'destroy'])->name('jobs.destroy');
+    Route::view('/employer/{job}/applications', 'jobs.applications')->name('employer.applications');
+    Route::delete('/employer/{job}/applications/{application}', [ApplicationController::class, 'destroy'])->name('employer.applications.destroy');
+    Route::put('/employer/{job}/applications/{application}/status', [ApplicationController::class, 'updateStatus'])->name('employer.applications.update');
+    Route::put('/employer/{job}/applications/{application}/notes', [ApplicationController::class, 'updateNots'])->name('employer.applications.notes');
     Route::get('/employer-dash' , [EmployerController::class, 'show'])->name('employer.dashboard'); 
 });
 

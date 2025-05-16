@@ -245,85 +245,15 @@
                         </div>
                     </div>
                 </div>
-    
-                <!-- Applications Section (Visible only to job owner) -->
-                @auth
-                    @if(auth()->user()->isEmployer() && auth()->user()->id == $job->employer_id)
-                        <div class="card border-0 shadow-sm mt-4">
-                            <div class="card-header bg-white py-3 border-0">
-                                <h3 class="h5 fw-bold mb-0 text-primary">
-                                    <i class="fas fa-users me-2"></i> Job Applications ({{ $job->applications->count() }})
-                                </h3>
-                            </div>
-                            <div class="card-body">
-                                @if($job->applications->count() > 0)
-                                    <div class="table-responsive">
-                                        <table class="table table-hover">
-                                            <thead>
-                                                <tr>
-                                                    <th>Applicant</th>
-                                                    <th>Applied On</th>
-                                                    <th>Status</th>
-                                                    <th>Actions</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                @foreach($job->applications as $application)
-                                                    <tr>
-                                                        <td>
-                                                            <div class="d-flex align-items-center">
-                                                                <div class="flex-shrink-0">
-                                                                    <img src="{{ $application->user->profile_image ?? asset('images/default-profile.png') }}" alt="Profile" class="rounded-circle" width="40" height="40">
-                                                                </div>
-                                                                <div class="flex-grow-1 ms-3">
-                                                                    <h6 class="mb-0">{{ $application->user->name }}</h6>
-                                                                    <small class="text-muted">{{ $application->user->email }}</small>
-                                                                </div>
-                                                            </div>
-                                                        </td>
-                                                        <td>{{ $application->created_at->format('M d, Y') }}</td>
-                                                        <td>
-                                                            <span class="badge 
-                                                                @if($application->status == 'submitted') bg-info
-                                                                @elseif($application->status == 'under_review') bg-primary
-                                                                @elseif($application->status == 'accepted') bg-success
-                                                                @elseif($application->status == 'rejected') bg-danger
-                                                                @endif">
-                                                                {{ str_replace('_', ' ', $application->status) }}
-                                                            </span>
-                                                        </td>
-                                                        <td>
-                                                            <a href="{{ route('job_applications.show', $application->id) }}" class="btn btn-sm btn-outline-primary">
-                                                                <i class="fas fa-eye"></i> View
-                                                            </a>
-                                                        </td>
-                                                    </tr>
-                                                @endforeach
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                @else
-                                    <div class="text-center py-4">
-                                        <div class="mb-3">
-                                            <i class="fas fa-user-times fa-3x text-muted"></i>
-                                        </div>
-                                        <h5 class="fw-bold">No applications yet</h5>
-                                        <p class="text-muted">This job hasn't received any applications yet.</p>
-                                    </div>
-                                @endif
-                            </div>
-                        </div>
-                    @endif
-                @endauth
+
             </div>
 
-            <!-- Applications Section - Only visible to job owner -->
             @auth
                 @if(auth()->user()->isEmployer() && auth()->user()->employer->id == $job->employer_id)
                     <div class="card border-0 shadow-sm">
                         <div class="card-header bg-white py-3 border-0 d-flex justify-content-between align-items-center">
                             <h3 class="h5 fw-bold mb-0 text-primary">
-                                <i class="fas fa-users me-2"></i> Applications ({{ $job->applications_count ?? 0 }})
+                                <i class="fas fa-users me-2"></i> Applications ({{ count($job->applications) ?? 0 }})
                             </h3>
                             <div class="dropdown">
                                 <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" id="filterDropdown" data-bs-toggle="dropdown">
@@ -332,19 +262,19 @@
                                 <ul class="dropdown-menu dropdown-menu-end">
                                     <li><a class="dropdown-item" href="{{ request()->fullUrlWithQuery(['status' => '']) }}">All Applications</a></li>
                                     <li><hr class="dropdown-divider"></li>
-                                    {{-- @foreach(Application::statusOptions() as $value => $label)
+                                    @foreach($statusOptions as $value => $label)
                                         <li>
                                             <a class="dropdown-item" href="{{ request()->fullUrlWithQuery(['status' => $value]) }}">
                                                 {{ $label }}
                                             </a>
                                         </li>
-                                    @endforeach --}}
+                                    @endforeach
                                 </ul>
                             </div>
                         </div>
                         
                         <div class="card-body">
-                            @if($job->applications_count > 0)
+                            @if(count($job->applications) > 0)
                                 <div class="table-responsive">
                                     <table class="table table-hover align-middle">
                                         <thead class="table-light">
@@ -358,7 +288,7 @@
                                         </thead>
                                         <tbody>
                                             @foreach($job->applications as $application)
-                                                <tr class="{{ $application->isNew() ? 'table-info' : '' }}">
+                                                <tr class="{{ 'table-info' }}">
                                                     <td>
                                                         <div class="d-flex align-items-center">
                                                             <div class="flex-shrink-0">
@@ -382,9 +312,10 @@
                                                     </td>
                                                     <td>
                                                         {!! $application->status_badge !!}
-                                                        @if($application->isNew())
-                                                            <span class="badge bg-warning ms-1">New</span>
-                                                        @endif
+
+                                                        <span class="badge bg-warning ms-1">{{$application->status}}</span>
+                                                        {{-- @if($application->isNew())
+                                                        @endif --}}
                                                     </td>
                                                     <td>
                                                         @if($application->resume_path)
@@ -399,11 +330,7 @@
                                                     </td>
                                                     <td>
                                                         <div class="d-flex gap-2">
-                                                            <a href="{{ route('employer.applications.show', $application) }}" 
-                                                               class="btn btn-sm btn-outline-primary"
-                                                               title="View Application">
-                                                                <i class="fas fa-eye"></i>
-                                                            </a>
+                                                           
                                                             
                                                             <div class="dropdown">
                                                                 <button class="btn btn-sm btn-outline-secondary dropdown-toggle" 
@@ -428,7 +355,7 @@
                                                                     </li>
                                                                     <li><hr class="dropdown-divider"></li>
                                                                     <li>
-                                                                        <form method="POST" action="{{ route('employer.applications.destroy', $application) }}">
+                                                                        <form method="POST" action="{{ route('employer.applications.destroy', [$job, $application] ) }}">
                                                                             @csrf
                                                                             @method('DELETE')
                                                                             <button type="submit" class="dropdown-item text-danger" 
@@ -445,7 +372,7 @@
                                                         <div class="modal fade" id="statusModal{{ $application->id }}" tabindex="-1">
                                                             <div class="modal-dialog">
                                                                 <div class="modal-content">
-                                                                    <form method="POST" action="{{ route('employer.applications.update', $application) }}">
+                                                                    <form method="POST" action="{{ route('employer.applications.update', [$job, $application]) }}">
                                                                         @csrf
                                                                         @method('PUT')
                                                                         <div class="modal-header">
@@ -456,7 +383,7 @@
                                                                             <div class="mb-3">
                                                                                 <label class="form-label">Current Status: {!! $application->status_badge !!}</label>
                                                                                 <select name="status" class="form-select">
-                                                                                    @foreach(Application::statusOptions() as $value => $label)
+                                                                                    @foreach($statusOptions as $value => $label)
                                                                                         <option value="{{ $value }}" {{ $application->status == $value ? 'selected' : '' }}>
                                                                                             {{ $label }}
                                                                                         </option>
@@ -477,7 +404,7 @@
                                                         <div class="modal fade" id="notesModal{{ $application->id }}" tabindex="-1">
                                                             <div class="modal-dialog">
                                                                 <div class="modal-content">
-                                                                    <form method="POST" action="{{ route('employer.applications.notes', $application) }}">
+                                                                    <form method="POST" action="{{ route('employer.applications.notes', [$job , $application]) }}">
                                                                         @csrf
                                                                         <div class="modal-header">
                                                                             <h5 class="modal-title">Application Notes</h5>
@@ -512,6 +439,8 @@
                                 @endif
                             @else
                                 <div class="text-center py-5">
+
+                                    <p>{{$job->applications}}</p>
                                     <div class="mb-3">
                                         <i class="fas fa-user-times fa-4x text-muted opacity-25"></i>
                                     </div>
