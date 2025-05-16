@@ -6,6 +6,7 @@ use App\Http\Controllers\EmployerController;
 use App\Http\Controllers\JobController;
 use App\Http\Middleware\Employer;
 use App\Http\Middleware\Candidate;
+use App\Http\Middleware\IsAdmin;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\CandidateController;
 use App\Http\Controllers\ApplicationController;
@@ -21,8 +22,8 @@ Route::get('/', function () {
         print('User is logged in');
         if ($user->user_type == 'employer'){
             return redirect()->route('employer.jobs');
-            }else if ($user->user_type == 'candidate'){
-                return redirect()->route('candidate.jobs.index');
+        }else if ($user->user_type == 'candidate'){
+            return redirect()->route('candidate.jobs.index');
         }if ($user->user_type === 'admin') {
             return redirect()->route('admin.dashboard');
         }
