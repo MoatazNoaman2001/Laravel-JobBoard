@@ -14,6 +14,7 @@ use App\Http\Controllers\MessageController;
 use App\Http\Controllers\Auth\PasswordResetLinkController;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Job;
+use App\Http\Controllers\HomeController;
 
 Route::get('/', function () {
     if (auth()->check()){
@@ -31,13 +32,23 @@ Route::get('/', function () {
     }
 });
 
+
+
+Route::get('/', [HomeController::class, 'index'])->name('home');
+
+
+Route::get('/about', function () {
+    return view('about');
+})->name('about');
+
+
 Route::get('/jobs/{job}', [JobController::class, 'show'])->name('jobs.show');
 
 
 Route::middleware('guest')->group(function () {
     Route::get("employer/register", [EmployerController::class, 'index'])->name('employer.register');
     Route::post('employer/register', [EmployerController::class , 'register'])->name('register.employer');
-    Route::view("condidate/register", 'candidate.register')->name('condidate.register');
+    Route::view("condidate/register", 'candidate.register')->name('candidate.register');
     Route::post('condidate/register', [CandidateController::class , 'register'])->name('condidate.store');
     Route::view('/login', 'login')->name('login');
     Route::post('/login', [LoginController::class, 'login']);
@@ -135,5 +146,7 @@ Route::get('/notifications/job/{notification}', function ($jobId) {
 Route::get('/admin-test', function () {
     return 'Admin middleware is working correctly!';
 })->middleware(['auth', IsAdmin::class])->name('admin.test');
+
+
 
 require __DIR__.'/auth.php';

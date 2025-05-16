@@ -24,12 +24,13 @@
                     $salary = json_decode($job->salary_range, true) ?? ['min' => 'N/A', 'max' => 'N/A'];
                 @endphp
                 <div style="width: 100%; max-width: 600px;">
-                    <div class="card h-100 border-0 shadow-sm hover-shadow transition-all">
+                    <div class="card h-100 border-0 shadow-sm hover-shadow transition-all p-4">
                         <div class="card-header bg-white border-0 pb-0">
                             <div class="d-flex align-items-center">
                                 <div class="flex-shrink-0">
                                     <div class="bg-light rounded-circle d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
-                                    <img src="{{ asset('storage/' . $job->logo) }}" alt="Company Logo" style="max-width: 40px; max-height: 40px;">                                    </div>
+                                        <img src="{{ asset('storage/' . $job->logo) }}" alt="Company Logo" style="max-width: 40px; max-height: 40px;">
+                                    </div>
                                 </div>
                                 <div class="flex-grow-1 ms-3">
                                     <h5 class="mb-0 fw-bold">{{ $job->title }}</h5>
@@ -55,7 +56,6 @@
                                     @endforeach
                                 </div>
                             </div>
-                            
 
                             <div class="mb-3">
                                 <h6 class="fw-bold text-primary">Salary Range</h6>
@@ -63,23 +63,22 @@
                                     <span class="badge bg-success bg-opacity-10 text-success">
                                         {{ $salary['min'] }} - {{ $salary['max'] }} EGP
                                     </span>
-                               </div>
+                                </div>
                                 <div class="col">
                                     <h6 class="fw-bold text-primary">Experiance Range</h6>
                                     <div class="d-flex align-items-center">
                                         <span class="badge bg-success bg-opacity-10 text-success">
-                                            {{ json_decode($job->experience_level_range, true)['min'] }} - {{ json_decode($job->experience_level_range, true)['max'] }} EGP                                    </span>
+                                            {{ json_decode($job->experience_level_range, true)['min'] }} - {{ json_decode($job->experience_level_range, true)['max'] }} Years
+                                        </span>
                                     </div>
                                 </div>
-                                
-                                
                             </div>
-                            
+
                             <div class="col">
                                 <h6 class="fw-bold text-primary">Address</h6>
                                 <div class="d-flex align-items-center">
                                     <span class="badge bg-success bg-opacity-10 text-success">
-                                        {{ json_decode($job->location, true)['city'] }} : {{ json_decode($job->location, true)['state'] }}                             
+                                        {{ json_decode($job->location, true)['city'] }} : {{ json_decode($job->location, true)['state'] }}
                                     </span>
                                 </div>
                             </div>
@@ -130,25 +129,18 @@
 </div>
 
 <style>
-    .hover-shadow:hover {
-        box-shadow: 0 0.5rem 1.5rem rgba(0, 0, 0, 0.1);
-        transform: translateY(-2px);
-    }
-    .transition-all {
-        transition: all 0.3s ease;
-    }
     .card {
         border-radius: 12px !important;
         overflow: hidden !important;
-        border: 1.5px solid rgba(0, 0, 0, 0.3) !important;
-        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4) !important;
+        box-shadow: 0 0.50rem 1rem rgba(0, 0, 0, 0.2);
         transition: box-shadow 0.3s ease, transform 0.3s ease, border-color 0.3s ease !important;
         background-color: #fff;
+        padding: 1.5rem;
     }
+
     .card:hover {
-        box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6) !important;
+        box-shadow: 0 0.75rem 1.5rem rgba(0, 0, 0, 0.2);
         transform: translateY(-4px) !important;
-        border-color: rgba(0, 0, 0, 0.5) !important;
     }
 </style>
 @endsection
