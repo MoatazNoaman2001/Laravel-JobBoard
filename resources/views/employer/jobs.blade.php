@@ -14,7 +14,7 @@
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
     @endif
-    
+
     @if(session('success'))
         <div class="alert alert-success alert-dismissible fade show" role="alert">
             {{ session('success') }}
@@ -29,7 +29,7 @@
             <p class="mb-0">Get started by posting your first job opportunity</p>
         </div>
     @else
-        <div class="row g-4" style="display: flex; justify-content: center; flex-wrap: wrap; gap: 1.5rem;">
+    <div class="row g-4" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(400px, 1fr)); gap: 1.5rem;">
             @foreach($jobs as $job)
                 @php
                     $location = json_decode($job->location, true);

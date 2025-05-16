@@ -127,7 +127,7 @@ class AdminController extends Controller
     {
         $job = Job::with(['employer'])->findOrFail($id);
         $job->applications_count = $job->applications()->count();
-        return response()->json($job);
+        return view('jobs.details', ['job'=> $job]);
     }
 
     public function toggleUserStatus($id)
@@ -215,7 +215,7 @@ class AdminController extends Controller
      */
     public function applications(Request $request)
     {
-        $query = Application::with(['job', 'candidate.user']); // This assumes Application has candidate() relationship
+        $query = Application::with(['job', 'candidate']); // This assumes Application has candidate() relationship
     
         // Apply search filter
         if ($request->has('search') && !empty($request->search)) {
@@ -240,7 +240,7 @@ class AdminController extends Controller
      */
     public function getApplicationDetails($id)
     {
-        $application = Application::with(['job.employer', 'candidate.user'])->findOrFail($id);
+        $application = Application::with(['job.employer', 'candidate'])->findOrFail($id);
         return response()->json($application);
     }
 
