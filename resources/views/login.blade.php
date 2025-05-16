@@ -60,11 +60,9 @@
                         </div>
 
                         <div class="text-center">
-                            @if (Route::has('password.request'))
-                                <a class="text-decoration-none" href="{{ route('password.request') }}">
+                                <a class="text-decoration-none" href="{{ route('auth.forget_password') }}">
                                     {{ __('Forgot Your Password?') }}
                                 </a>
-                            @endif
                         </div>
                     </form>
                 </div>

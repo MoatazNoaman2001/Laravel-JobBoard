@@ -156,9 +156,20 @@ class JobController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Job $job)
+    public function destroy($id)
     {
+        $job = Job::find($id);
+    
+        if (!$job) {
+            return back()->with('error', 'Job not found');
+        }
+
+        if (auth()->user()->employer->id !== $job->employer_id) {
+            return back()->with('error', 'Unauthorized action');
+        }
+
         $job->delete();
+        // print_r($res);
         return redirect()->route('employer.jobs')
             ->with('success', 'Job deleted successfully!');
     }

@@ -39,6 +39,7 @@ class Job extends Model
             'benefits' => 'array',
             'location' => 'array',
             'experience_level_range' => 'array',
+            'deleted_at' => 'datetime',
         ];
     }
 
