@@ -8,6 +8,19 @@
             <i class="fas fa-plus me-2"></i> Post New Job
         </a>
     </div>
+    @if(session('error'))
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            {{ session('error') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    @endif
+    
+    @if(session('success'))
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            {{ session('success') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    @endif
 
     @if($jobs->isEmpty())
         <div class="alert alert-info text-center py-4">
@@ -24,7 +37,7 @@
                     $salary = json_decode($job->salary_range, true) ?? ['min' => 'N/A', 'max' => 'N/A'];
                 @endphp
                 <div style="width: 100%; max-width: 600px;">
-                    <div class="card h-100 border-0 shadow-sm hover-shadow transition-all">
+                    <div class="card h-100 border-0 shadow-lg shadow-blue hover-shadow transition-all">
                         <div class="card-header bg-white border-0 pb-0">
                             <div class="d-flex align-items-center">
                                 <div class="flex-shrink-0">
@@ -137,7 +150,7 @@
     .transition-all {
         transition: all 0.3s ease;
     }
-    .card {
+    /* .card {
         border-radius: 12px !important;
         overflow: hidden !important;
         border: 1.5px solid rgba(0, 0, 0, 0.3) !important;
@@ -149,6 +162,6 @@
         box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6) !important;
         transform: translateY(-4px) !important;
         border-color: rgba(0, 0, 0, 0.5) !important;
-    }
+    } */
 </style>
 @endsection

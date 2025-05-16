@@ -43,7 +43,7 @@ class ApplicationController extends Controller
         $id = $request->route('job');
         $job = Job::find($id);
         if ($job->applications()->where('candidate_id', Auth::id())->exists()) {
-            return redirect()->route('candidate.jobs.show', $job)
+            return redirect()->route('candidate.jobs.index', $job)
                    ->with('error', __('You have already applied for this job.'));
         }
     
@@ -67,19 +67,19 @@ class ApplicationController extends Controller
                 $applicationData['resume_filename'] = $request->file('resume')->getClientOriginalName();
             }
     
-            // $application = Application::create($applicationData);
+            $application = Application::create($applicationData);
     
-            // Notification::send(
-            //     Auth::user(),
-            //     new ApplicationSubmitted($job, $application)
-            // );
+            Notification::send(
+                Auth::user(),
+                new ApplicationSubmitted($job, $application)
+            );
     
-            // if ($job->shouldNotifyEmployer()) {
-            //     Notification::send(
-            //         $job->employer,
-            //         new NewApplicationReceived($job, $application)
-            //     );
-            // }
+            if ($job->shouldNotifyEmployer()) {
+                Notification::send(
+                    $job->employer,
+                    new NewApplicationReceived($job, $application)
+                );
+            }
             DB::commit();
     
             return redirect()->route('candidate.jobs.index')
@@ -93,6 +93,58 @@ class ApplicationController extends Controller
         }
     }
 
+    public function updateStatus(Request $request){
+        $jobId = $request->route('job');
+        $applicationId = $request->route('application');
+
+
+        $application = Application::find($applicationId);
+        if (!$application) {
+            return back()->with('error', 'Application not found');
+        }
+        $job = Job::find($jobId);
+        if (!$job) {
+            return back()->with('error', 'Job not found');
+        }
+        if ($application->job_id !== $job->id) {
+            return back()->with('error', 'Application does not belong to this job');
+        }
+
+        $status = $request->input('status');
+        if (!in_array($status, ['pending', 'reviewed', 'accepted', 'rejected'])) {
+            return back()->with('error', 'Invalid status');
+        }
+        $application->status = $status;
+        $application->save();
+        return redirect()->route('jobs.index', $job)
+            ->with('success', 'Application status updated successfully');
+    } 
+    public function updateNotes(Request $request){
+        $jobId = $request->route('job');
+        $applicationId = $request->route('application');
+
+
+        $application = Application::find($applicationId);
+        if (!$application) {
+            return back()->with('error', 'Application not found');
+        }
+        $job = Job::find($jobId);
+        if (!$job) {
+            return back()->with('error', 'Job not found');
+        }
+        if ($application->job_id !== $job->id) {
+            return back()->with('error', 'Application does not belong to this job');
+        }
+
+        $status = $request->input('notes');
+        if (!in_array($status, ['pending', 'reviewed', 'accepted', 'rejected'])) {
+            return back()->with('error', 'Invalid status');
+        }
+        $application->notes = $status;
+        $application->save();
+        return redirect()->route('jobs.index', $job)
+            ->with('success', 'Application status updated successfully');    
+    } 
     /**
      * Display the specified resource.
      */
@@ -120,8 +172,25 @@ class ApplicationController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Application $application)
+    public function destroy(Request $request)
     {
-        //
+        $jobId = $request->route('job');
+        $applicationId = $request->route('application');
+
+        $application = Application::find($applicationId);
+        if (!$application) {
+            return back()->with('error', 'Application not found');
+        }
+        $job = Job::find($jobId);
+        if (!$job) {
+            return back()->with('error', 'Job not found');
+        }
+        if ($application->job_id !== $job->id) {
+            return back()->with('error', 'Application does not belong to this job');
+        }
+
+        $application->delete();
+        return redirect()->route('employer.applications', $jobId)
+            ->with('success', 'Application deleted successfully');
     }
 }

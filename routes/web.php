@@ -59,6 +59,10 @@ Route::middleware(['auth', Employer::class])->group(function() {
     Route::get('/employer/jobs/{id}/edit', [JobController::class, 'edit'])->name('jobs.edit');
     Route::put('/employer/jobs/{id}/edit', [JobController::class, 'update'])->name('jobs.update');
     Route::delete('/employer/jobs/{id}/delete', [JobController::class, 'destroy'])->name('jobs.destroy');
+    Route::view('/employer/{job}/applications', 'jobs.applications')->name('employer.applications');
+    Route::delete('/employer/{job}/applications/{application}', [ApplicationController::class, 'destroy'])->name('employer.applications.destroy');
+    Route::put('/employer/{job}/applications/{application}/status', [ApplicationController::class, 'updateStatus'])->name('employer.applications.update');
+    Route::put('/employer/{job}/applications/{application}/notes', [ApplicationController::class, 'updateNots'])->name('employer.applications.notes');
     Route::get('/employer-dash' , [EmployerController::class, 'show'])->name('employer.dashboard'); 
 });
 
