@@ -127,10 +127,10 @@
                         <!-- Skills Required -->
                         <div class="mb-5">
                             <h3 class="h5 fw-bold mb-4 text-primary pb-2 border-bottom">Skills Required</h3>
-                            <div class="d-flex flex-wrap gap-2 ps-3">
+                            <div class="d-flex flex-wrap gap-2 ps-3" style="max-width: 100%;">
                                 @foreach(json_decode($job->skills) as $skill)
-                                    <span class="badge bg-primary bg-opacity-10 text-primary py-2 px-3 rounded-pill">
-                                        <i class="fas fa-check-circle me-1"></i> {{ $skill }}
+                                    <span class="badge bg-primary text-white bg-opacity-10 text-primary py-2 px-3 rounded-pill">
+                                        {{ $skill }}
                                     </span>
                                 @endforeach
                             </div>

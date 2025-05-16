@@ -147,7 +147,7 @@ class JobController extends Controller
                 'country' => $validated['location']['country'],
                 'postal_code' => $validated['location']['postal_code']
             ]),
-            'work_type' => $validated['work_type'],
+            'work_typ   e' => $validated['work_type'],
             'application_deadline' => $validated['application_deadline'],
         ];
     

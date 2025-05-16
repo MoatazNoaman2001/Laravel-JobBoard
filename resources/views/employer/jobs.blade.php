@@ -56,15 +56,34 @@
                                 </div>
                             </div>
                             
+
                             <div class="mb-3">
                                 <h6 class="fw-bold text-primary">Salary Range</h6>
                                 <div class="d-flex align-items-center">
                                     <span class="badge bg-success bg-opacity-10 text-success">
                                         {{ $salary['min'] }} - {{ $salary['max'] }} EGP
                                     </span>
+                               </div>
+                                <div class="col">
+                                    <h6 class="fw-bold text-primary">Experiance Range</h6>
+                                    <div class="d-flex align-items-center">
+                                        <span class="badge bg-success bg-opacity-10 text-success">
+                                            {{ json_decode($job->experience_level_range, true)['min'] }} - {{ json_decode($job->experience_level_range, true)['max'] }} EGP                                    </span>
+                                    </div>
                                 </div>
+                                
+                                
                             </div>
                             
+                            <div class="col">
+                                <h6 class="fw-bold text-primary">Address</h6>
+                                <div class="d-flex align-items-center">
+                                    <span class="badge bg-success bg-opacity-10 text-success">
+                                        {{ json_decode($job->location, true)['city'] }} : {{ json_decode($job->location, true)['state'] }}                             
+                                    </span>
+                                </div>
+                            </div>
+                            <br/>
                             <div class="d-flex justify-content-between align-items-center">
                                 <div>
                                     <span class="badge bg-{{ $job->work_type == 'on_site' ? 'info' : 'warning' }} bg-opacity-10 text-{{ $job->work_type == 'on_site' ? 'info' : 'warning' }}">
