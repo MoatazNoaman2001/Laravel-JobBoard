@@ -126,7 +126,7 @@
                                     <td style="padding: 0.75rem 1rem; font-size: 0.875rem;">{{ $job->id }}</td>
                                     <td style="padding: 0.75rem 1rem; font-size: 0.875rem;">{{ $job->title }}</td>
                                     <td style="padding: 0.75rem 1rem; font-size: 0.875rem;">{{ $job->employer->company_name }}</td>
-                                    <td style="padding: 0.75rem 1rem; font-size: 0.875rem;">{{ $job->location }}</td>
+                                    <td style="padding: 0.75rem 1rem; font-size: 0.875rem;">{{ json_decode($job->location, true)['city'] }}, {{ json_decode($job->location, true)['state'] }}</td>
                                     <td style="padding: 0.75rem 1rem; font-size: 0.875rem;">
                                         @if($job->status == 'pending')
                                             <span style="background-color: rgba(245, 158, 11, 0.1); color: #f59e0b; font-size: 0.75rem; padding: 0.125rem 0.5rem; border-radius: 0.25rem;">Pending</span>
@@ -227,93 +227,93 @@
 </style>
 
 <script>
-    function showJobDetails(jobId) {
-        document.getElementById('jobDetailsModal').style.display = 'block';
-        document.getElementById('jobDetailsContent').innerHTML = '<div style="display: flex; justify-content: center; padding: 2rem;"><div style="display: inline-block; width: 40px; height: 40px; border: 3px solid var(--gray-300); border-top-color: var(--primary); border-radius: 50%; animation: spin 1s linear infinite;"></div></div>';
+    // function showJobDetails(jobId) {
+    //     document.getElementById('jobDetailsModal').style.display = 'block';
+    //     document.getElementById('jobDetailsContent').innerHTML = '<div style="display: flex; justify-content: center; padding: 2rem;"><div style="display: inline-block; width: 40px; height: 40px; border: 3px solid var(--gray-300); border-top-color: var(--primary); border-radius: 50%; animation: spin 1s linear infinite;"></div></div>';
 
-        // Fetch job details via AJAX
-        fetch(`/admin/jobs/${jobId}/details`)
-            .then(response => response.json())
-            .then(data => {
-                let content = `
-                    <div style="padding: 1rem; background-color: var(--gray-100); border-radius: 0.375rem; margin-bottom: 1rem;">
-                        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem;">
-                            <div>
-                                <h4 style="font-weight: 600; font-size: 1.5rem; margin: 0 0 0.5rem 0;">${data.title}</h4>
-                                <p style="color: var(--gray-700); margin: 0 0 0.25rem 0;">
-                                    <i class="fas fa-building" style="color: var(--primary);"></i> ${data.employer.company_name}
-                                </p>
-                                <p style="color: var(--gray-700); margin: 0 0 0.25rem 0;">
-                                    <i class="fas fa-map-marker-alt" style="color: var(--primary);"></i> ${data.location}
-                                </p>
-                                <p style="color: var(--gray-700); margin: 0;">
-                                    <i class="fas fa-money-bill-wave" style="color: var(--primary);"></i> ${data.salary}
-                                </p>
-                            </div>
-                            <div>
-                                <span style="display: inline-block; padding: 0.5rem 1rem; border-radius: 0.375rem; font-weight: 500; ${
-                                    data.status === 'pending' ? 'background-color: rgba(245, 158, 11, 0.1); color: #f59e0b;' :
-                                    data.status === 'approved' ? 'background-color: rgba(16, 185, 129, 0.1); color: #10b981;' :
-                                    'background-color: rgba(239, 68, 68, 0.1); color: #ef4444;'
-                                }">
-                                    ${data.status.charAt(0).toUpperCase() + data.status.slice(1)}
-                                </span>
-                            </div>
-                        </div>
+    //     // Fetch job details via AJAX
+    //     fetch(`/admin/jobs/${jobId}/details`)
+    //         .then(response => response.json())
+    //         .then(data => {
+    //             let content = `
+    //                 <div style="padding: 1rem; background-color: var(--gray-100); border-radius: 0.375rem; margin-bottom: 1rem;">
+    //                     <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem;">
+    //                         <div>
+    //                             <h4 style="font-weight: 600; font-size: 1.5rem; margin: 0 0 0.5rem 0;">${data.title}</h4>
+    //                             <p style="color: var(--gray-700); margin: 0 0 0.25rem 0;">
+    //                                 <i class="fas fa-building" style="color: var(--primary);"></i> ${data.employer.company_name}
+    //                             </p>
+    //                             <p style="color: var(--gray-700); margin: 0 0 0.25rem 0;">
+    //                                 <i class="fas fa-map-marker-alt" style="color: var(--primary);"></i> ${ json_decode($job->location, true)['city'] }, ${ json_decode($job->location, true)['state'] }
+    //                             </p>
+    //                             <p style="color: var(--gray-700); margin: 0;">
+    //                                 <i class="fas fa-money-bill-wave" style="color: var(--primary);"></i> ${data.salary}
+    //                             </p>
+    //                         </div>
+    //                         <div>
+    //                             <span style="display: inline-block; padding: 0.5rem 1rem; border-radius: 0.375rem; font-weight: 500; ${
+    //                                 data.status === 'pending' ? 'background-color: rgba(245, 158, 11, 0.1); color: #f59e0b;' :
+    //                                 data.status === 'approved' ? 'background-color: rgba(16, 185, 129, 0.1); color: #10b981;' :
+    //                                 'background-color: rgba(239, 68, 68, 0.1); color: #ef4444;'
+    //                             }">
+    //                                 ${data.status.charAt(0).toUpperCase() + data.status.slice(1)}
+    //                             </span>
+    //                         </div>
+    //                     </div>
 
-                        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-bottom: 1rem;">
-                            <div>
-                                <p style="font-weight: 500; margin-bottom: 0.25rem;">Job Type</p>
-                                <p style="margin-top: 0;">${data.job_type || 'Not specified'}</p>
-                            </div>
-                            <div>
-                                <p style="font-weight: 500; margin-bottom: 0.25rem;">Experience</p>
-                                <p style="margin-top: 0;">${data.experience || 'Not specified'}</p>
-                            </div>
-                            <div>
-                                <p style="font-weight: 500; margin-bottom: 0.25rem;">Posted On</p>
-                                <p style="margin-top: 0;">${new Date(data.created_at).toLocaleDateString()}</p>
-                            </div>
-                        </div>
-                    </div>
+    //                     <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-bottom: 1rem;">
+    //                         <div>
+    //                             <p style="font-weight: 500; margin-bottom: 0.25rem;">Job Type</p>
+    //                             <p style="margin-top: 0;">${data.job_type || 'Not specified'}</p>
+    //                         </div>
+    //                         <div>
+    //                             <p style="font-weight: 500; margin-bottom: 0.25rem;">Experience</p>
+    //                             <p style="margin-top: 0;">${data.experience || 'Not specified'}</p>
+    //                         </div>
+    //                         <div>
+    //                             <p style="font-weight: 500; margin-bottom: 0.25rem;">Posted On</p>
+    //                             <p style="margin-top: 0;">${new Date(data.created_at).toLocaleDateString()}</p>
+    //                         </div>
+    //                     </div>
+    //                 </div>
 
-                    <div style="margin-top: 1.5rem;">
-                        <h5 style="font-weight: 600; font-size: 1.1rem; margin-bottom: 0.75rem;">Job Description</h5>
-                        <div style="padding: 1rem; border: 1px solid var(--gray-200); border-radius: 0.375rem; background-color: white;">
-                            ${data.description || 'No description provided.'}
-                        </div>
-                    </div>
+    //                 <div style="margin-top: 1.5rem;">
+    //                     <h5 style="font-weight: 600; font-size: 1.1rem; margin-bottom: 0.75rem;">Job Description</h5>
+    //                     <div style="padding: 1rem; border: 1px solid var(--gray-200); border-radius: 0.375rem; background-color: white;">
+    //                         ${data.description || 'No description provided.'}
+    //                     </div>
+    //                 </div>
 
-                    <div style="margin-top: 1.5rem;">
-                        <h5 style="font-weight: 600; font-size: 1.1rem; margin-bottom: 0.75rem;">Application Statistics</h5>
-                        <div style="padding: 1rem; border: 1px solid var(--gray-200); border-radius: 0.375rem; background-color: white;">
-                            <p style="margin: 0;">Total Applications: ${data.applications_count || 0}</p>
-                        </div>
-                    </div>
-                `;
+    //                 <div style="margin-top: 1.5rem;">
+    //                     <h5 style="font-weight: 600; font-size: 1.1rem; margin-bottom: 0.75rem;">Application Statistics</h5>
+    //                     <div style="padding: 1rem; border: 1px solid var(--gray-200); border-radius: 0.375rem; background-color: white;">
+    //                         <p style="margin: 0;">Total Applications: ${data.applications_count || 0}</p>
+    //                     </div>
+    //                 </div>
+    //             `;
 
-                document.getElementById('jobDetailsContent').innerHTML = content;
-            })
-            .catch(error => {
-                document.getElementById('jobDetailsContent').innerHTML = `
-                    <div style="padding: 1rem; background-color: rgba(239, 68, 68, 0.1); border-radius: 0.375rem; color: #ef4444; text-align: center;">
-                        <i class="fas fa-exclamation-circle"></i> Error loading job details. Please try again.
-                    </div>
-                `;
-                console.error('Error fetching job details:', error);
-            });
-    }
+    //             document.getElementById('jobDetailsContent').innerHTML = content;
+    //         })
+    //         .catch(error => {
+    //             document.getElementById('jobDetailsContent').innerHTML = `
+    //                 <div style="padding: 1rem; background-color: rgba(239, 68, 68, 0.1); border-radius: 0.375rem; color: #ef4444; text-align: center;">
+    //                     <i class="fas fa-exclamation-circle"></i> Error loading job details. Please try again.
+    //                 </div>
+    //             `;
+    //             console.error('Error fetching job details:', error);
+    //         });
+    // }
 
-    function closeJobDetailsModal() {
-        document.getElementById('jobDetailsModal').style.display = 'none';
-    }
+    // function closeJobDetailsModal() {
+    //     document.getElementById('jobDetailsModal').style.display = 'none';
+    // }
 
-    // Close modal when clicking outside of it
-    window.onclick = function(event) {
-        const modal = document.getElementById('jobDetailsModal');
-        if (event.target == modal) {
-            closeJobDetailsModal();
-        }
-    }
+    // // Close modal when clicking outside of it
+    // window.onclick = function(event) {
+    //     const modal = document.getElementById('jobDetailsModal');
+    //     if (event.target == modal) {
+    //         closeJobDetailsModal();
+    //     }
+    // }
 </script>
 @endsection

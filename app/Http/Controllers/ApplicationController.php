@@ -61,25 +61,29 @@ class ApplicationController extends Controller
             ];
     
             if ($request->hasFile('resume')) {
-                $filename = 'resume_'.Auth::id().'_'.time().'.'.$request->resume->extension();
-                $path = $request->file('resume')->storeAs('resumes', $filename, 'public');
-                $applicationData['resume_path'] = $path;
-                $applicationData['resume_filename'] = $request->file('resume')->getClientOriginalName();
-            }
+                $resume = $request->file('resume');
+                $validated = $request->validate([
+                    'resume' => 'file|mimes:pdf,doc,docx|max:2048',
+                ]);
+                $filename = 'resume_' . Auth::id() . '_' . time() . '.' . $resume->getClientOriginalExtension();
+                $path = $resume->storeAs('public/resumes', $filename);
+                $applicationData['resume_path'] = str_replace('public/', '', $path);
+                $applicationData['resume_filename'] = $resume->getClientOriginalName();
+            } 
     
             $application = Application::create($applicationData);
     
-            Notification::send(
-                Auth::user(),
-                new ApplicationSubmitted($job, $application)
-            );
+            // Notification::send(
+            //     Auth::user(),
+            //     new ApplicationSubmitted($job, $application)
+            // );
     
-            if ($job->shouldNotifyEmployer()) {
-                Notification::send(
-                    $job->employer,
-                    new NewApplicationReceived($job, $application)
-                );
-            }
+            // if ($job->shouldNotifyEmployer()) {
+            //     Notification::send(
+            //         $job->employer,
+            //         new NewApplicationReceived($job, $application)
+            //     );
+            // }
             DB::commit();
     
             return redirect()->route('candidate.jobs.index')
