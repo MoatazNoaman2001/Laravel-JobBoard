@@ -165,34 +165,41 @@
 
                         <div class="mb-4">
                             <h5 class="mb-3">Compensation & Benefits</h5>
-                            
                             <div class="row">
                                 <div class="col-md-6 mb-3">
                                     <label for="salary_range_min" class="form-label">Minimum Salary *</label>
-                                    <input type="number"
-                                           value="{{ old('salary_range.min', json_decode($job->salary_range)->min ?? '') }}"
-                                           class="form-control @error('salary_range.min') is-invalid @enderror"
-                                           id="salary_range_min"
-                                           name="salary_range[min]"
-                                           required>
+                                    <input type="number" class="form-control @error('salary_range.min') is-invalid @enderror" 
+                                           id="salary_range_min" name="salary_range[min]" value="{{ json_decode($job->salary_range, true)['min'] }}" required>
                                     @error('salary_range.min')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
                                 </div>
-                                
                                 <div class="col-md-6 mb-3">
                                     <label for="salary_range_max" class="form-label">Maximum Salary *</label>
-                                    <input type="number"
-                                           value="{{ old('salary_range.min', json_decode($job->salary_range)->max ?? '') }}"
-                                           class="form-control @error('salary_range.max') is-invalid @enderror"
-                                           id="salary_range_max"
-                                           name="salary_range[max]"
-                                           required>
+                                    <input type="number" class="form-control @error('salary_range.max') is-invalid @enderror" 
+                                           id="salary_range_max" name="salary_range[max]" value="{{ json_decode($job->salary_range, true)['max'] }}" required>
                                     @error('salary_range.max')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
                                 </div>
-                                
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="exp_range_min" class="form-label">Minimum Experiance *</label>
+                                    <input type="number" class="form-control @error('exp_range.min') is-invalid @enderror" 
+                                           id="exp_range_min" name="exp_range[min]" value="{{ json_decode($job->experience_level_range, true)['min'] }}" required>
+                                    @error('exp_range.min')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="exp_range_max" class="form-label">Maximum Experiance *</label>
+                                    <input type="number" class="form-control @error('exp_range.max') is-invalid @enderror" 
+                                           id="exp_range_max" name="exp_range[max]" value="{{ json_decode($job->experience_level_range, true)['max'] }}" required>
+                                    @error('exp_range.max')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
                             </div>
 
                             <div class="mb-3">
