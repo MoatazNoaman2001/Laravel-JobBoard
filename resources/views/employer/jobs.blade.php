@@ -1,8 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container py-5">
-    {{-- <p>{{auth()->user()}}</p> --}}
+<div class="container py-5" style="max-width: 900px; margin: auto;">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h1 class="fw-bold">Job Listings</h1>
         <a href="{{ route('jobs.create') }}" class="btn btn-primary btn-lg">
@@ -17,22 +16,26 @@
             <p class="mb-0">Get started by posting your first job opportunity</p>
         </div>
     @else
-        <div class="row g-4">
+        <div class="row g-4" style="display: flex; justify-content: center; flex-wrap: wrap; gap: 1.5rem;">
             @foreach($jobs as $job)
-                <div class="">
+                @php
+                    $location = json_decode($job->location, true);
+                    $skills = json_decode($job->skills, true) ?? [];
+                    $salary = json_decode($job->salary_range, true) ?? ['min' => 'N/A', 'max' => 'N/A'];
+                @endphp
+                <div style="width: 100%; max-width: 600px;">
                     <div class="card h-100 border-0 shadow-sm hover-shadow transition-all">
                         <div class="card-header bg-white border-0 pb-0">
                             <div class="d-flex align-items-center">
                                 <div class="flex-shrink-0">
                                     <div class="bg-light rounded-circle d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
-                                        <img src="{{$job->logo}}" alt="">
-                                    </div>
+                                    <img src="{{ asset('storage/' . $job->logo) }}" alt="Company Logo" style="max-width: 40px; max-height: 40px;">                                    </div>
                                 </div>
                                 <div class="flex-grow-1 ms-3">
                                     <h5 class="mb-0 fw-bold">{{ $job->title }}</h5>
                                     <div class="text-muted small">
                                         <i class="fas fa-map-marker-alt me-1"></i>
-                                        {{ $job->location['city'] ?? '' }}, {{ $job->location['country'] ?? '' }}
+                                        {{ $location['city'] ?? 'Unknown City' }}, {{ $location['country'] ?? $job->country ?? 'Unknown Country' }}
                                     </div>
                                 </div>
                             </div>
@@ -47,7 +50,7 @@
                             <div class="mb-3">
                                 <h6 class="fw-bold text-primary">Skills Required</h6>
                                 <div class="d-flex flex-wrap gap-2">
-                                    @foreach(json_decode($job->skills) as $skill)
+                                    @foreach($skills as $skill)
                                         <span class="badge bg-primary bg-opacity-10 text-primary">{{ $skill }}</span>
                                     @endforeach
                                 </div>
@@ -57,7 +60,8 @@
                                 <h6 class="fw-bold text-primary">Salary Range</h6>
                                 <div class="d-flex align-items-center">
                                     <span class="badge bg-success bg-opacity-10 text-success">
-                                        {{ json_decode($job->salary_range, true)['min'] }} - {{ json_decode($job->salary_range, true)['max'] }} EGP                                    </span>
+                                        {{ $salary['min'] }} - {{ $salary['max'] }} EGP
+                                    </span>
                                 </div>
                             </div>
                             
@@ -69,7 +73,7 @@
                                     </span>
                                 </div>
                                 <div class="text-end">
-                                    <small class="text-muted">Deadline: {{ $job->application_deadline }}</small>
+                                    <small class="text-muted">Deadline: {{ \Carbon\Carbon::parse($job->application_deadline)->format('d M, Y') }}</small>
                                 </div>
                             </div>
                         </div>
@@ -85,18 +89,17 @@
                                 <div>
                                     <form method="GET" action="{{ route('jobs.edit', $job->id) }}" class="d-inline">
                                         @csrf
-                                        <Button class="btn btn-outline-success btn-sm me-1">
+                                        <button class="btn btn-outline-success btn-sm me-1">
                                             Edit
-                                        </Button>
+                                        </button>
                                     </form>
                                     <form method="POST" action="{{ route('jobs.destroy', $job->id) }}" class="d-inline">
                                         @csrf
                                         @method('DELETE')
-                                        <Button class="btn btn-outline-danger btn-sm">
+                                        <button class="btn btn-outline-danger btn-sm">
                                             Delete
-                                        </Button>
+                                        </button>
                                     </form>
-                                    
                                 </div>
                             </div>
                         </div>
@@ -104,8 +107,6 @@
                 </div>
             @endforeach
         </div>
-
-        
     @endif
 </div>
 
@@ -118,8 +119,17 @@
         transition: all 0.3s ease;
     }
     .card {
-        border-radius: 12px;
-        overflow: hidden;
+        border-radius: 12px !important;
+        overflow: hidden !important;
+        border: 1.5px solid rgba(0, 0, 0, 0.3) !important;
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4) !important;
+        transition: box-shadow 0.3s ease, transform 0.3s ease, border-color 0.3s ease !important;
+        background-color: #fff;
+    }
+    .card:hover {
+        box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6) !important;
+        transform: translateY(-4px) !important;
+        border-color: rgba(0, 0, 0, 0.5) !important;
     }
 </style>
 @endsection

@@ -7,7 +7,9 @@ use App\Http\Requests\UpdateJobRequest;
 use Illuminate\Http\Request;
 use App\Models\Job;
 use App\Models\Employer;
+use App\Models\User;
 use Illuminate\Support\Facades\Auth;
+use App\Notifications\NewJobPosted;
 
 class JobController extends Controller
 {
@@ -32,52 +34,57 @@ class JobController extends Controller
      * Store a newly created resource in storage.
      */
     public function store(StoreJobRequest $request)
-    {
-        $validated = $request->validated();
-        $employer = Auth::user()->employer;
-        if (!$employer) {
-            return back()->with('error', 'only available for employer to post a job');
-        }
-        print_r($request->all());
-        print_r($validated);
+{
+    $validated = $request->validated();
+    $employer = Auth::user()->employer;
 
-        $jobData = [
-            'employer_id' => $employer->id,
-            'title' => $validated['title'],
-            'responsibilities' => $validated['responsibilities'],
-            'skills' => json_encode($validated['skills']),
-            'qualifications' => json_encode($validated['qualifications']),
-            'salary_range' => json_encode([
-                'min' => $validated['salary_range']['min'],
-                'max' => $validated['salary_range']['max']
-            ]),
-            'experience_level_range' => json_encode([
-                'min' => $validated['exp_range']['min'],
-                'max' => $validated['exp_range']['max']
-            ]),
-            'country' => $validated['location']['country'],
-            'benefits' => isset($validated['benefits']) ? json_encode($validated['benefits']) : null,
-            'location' => json_encode([
-                'address' => $validated['location']['address'],
-                'city' => $validated['location']['city'],
-                'state' => $validated['location']['state'],
-                'country' => $validated['location']['country'],
-                'postal_code' => $validated['location']['postal_code']
-            ]),
-            'work_type' => $validated['work_type'],
-            'application_deadline' => $validated['application_deadline'],
-        ];
-    
-        if ($request->hasFile('logo')) {
-            $path = $request->file('logo')->store('company_logos', 'public');
-            $jobData['logo'] = $path;
-        }
-    
-        $job = Job::create($jobData);
-    
-        return redirect()->route('jobs.show', $job->id)
-            ->with('success', 'Job posted successfully!');
+    if (!$employer) {
+        return back()->with('error', 'only available for employer to post a job');
     }
+
+    $jobData = [
+        'employer_id' => $employer->id,
+        'title' => $validated['title'],
+        'responsibilities' => $validated['responsibilities'],
+        'skills' => json_encode($validated['skills']),
+        'qualifications' => json_encode($validated['qualifications']),
+        'salary_range' => json_encode([
+            'min' => $validated['salary_range']['min'],
+            'max' => $validated['salary_range']['max']
+        ]),
+        'experience_level_range' => json_encode([
+            'min' => $validated['exp_range']['min'],
+            'max' => $validated['exp_range']['max']
+        ]),
+        'country' => $validated['location']['country'],
+        'benefits' => isset($validated['benefits']) ? json_encode($validated['benefits']) : null,
+        'location' => json_encode([
+            'address' => $validated['location']['address'],
+            'city' => $validated['location']['city'],
+            'state' => $validated['location']['state'],
+            'country' => $validated['location']['country'],
+            'postal_code' => $validated['location']['postal_code']
+        ]),
+        'work_type' => $validated['work_type'],
+        'application_deadline' => $validated['application_deadline'],
+    ];
+
+    if ($request->hasFile('logo')) {
+        $path = $request->file('logo')->store('company_logos', 'public');
+        $jobData['logo'] = $path;
+    }
+
+    $job = Job::create($jobData);
+
+    $candidates = User::where('user_type', 'candidate')->get();
+
+    foreach ($candidates as $candidate) {
+        $candidate->notify(new NewJobPosted($job));
+    }
+
+    return redirect()->route('jobs.show', $job->id)
+        ->with('success', 'Job posted successfully and candidates notified!');
+}
 
     /**
      * Display the specified resource.
@@ -156,20 +163,9 @@ class JobController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy($id)
+    public function destroy(Job $job)
     {
-        $job = Job::find($id);
-    
-        if (!$job) {
-            return back()->with('error', 'Job not found');
-        }
-
-        if (auth()->user()->employer->id !== $job->employer_id) {
-            return back()->with('error', 'Unauthorized action');
-        }
-
         $job->delete();
-        // print_r($res);
         return redirect()->route('employer.jobs')
             ->with('success', 'Job deleted successfully!');
     }

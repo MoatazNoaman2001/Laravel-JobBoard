@@ -4,12 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Models\Application;
 use App\Models\Job;
-use App\Models\User;
-use App\Models\Candidate;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use App\Models\User;
+use App\Models\Candidate;
 
 
 class CandidateController extends Controller
@@ -21,8 +20,7 @@ class CandidateController extends Controller
         if ($request->filled('keywords')) {
             $query->where(function ($q) use ($request) {
                 $q->where('title', 'like', '%' . $request->keywords . '%')
-                  ->orWhere('description', 'like', '%' . $request->keywords . '%')
-                  ->orWhere('company', 'like', '%' . $request->keywords . '%');
+                  ->orWhere('responsibilities', 'like', '%' . $request->keywords . '%');
             });
         }
 
@@ -31,11 +29,14 @@ class CandidateController extends Controller
         }
 
         if ($request->filled('category')) {
-            $query->where('category', $request->category);
+            $categoryId = $request->category;
+            $query->whereHas('categories', function ($q) use ($categoryId) {
+                $q->where('category_id', $categoryId);
+            });
         }
 
         if ($request->filled('experience_level')) {
-            $query->where('experience_level', $request->experience_level);
+            $query->where('experience_level_range', 'like', '%' . $request->experience_level . '%');
         }
 
         if ($request->filled('work_type')) {
@@ -46,6 +47,7 @@ class CandidateController extends Controller
 
         return view('candidate.jobs.index', compact('jobs'));
     }
+
 
     public function showApplyForm(Job $job)
     {
@@ -124,34 +126,37 @@ class CandidateController extends Controller
 
     public function register(Request $request)
     {
-        // $request->validated();
+        try {
+            $user = null;
 
-        try{
-            DB::transaction(function() use($request) {
+            DB::transaction(function () use ($request, &$user) {
                 $existingUser = User::where('email', $request->email)->first();
-        
+
                 if ($existingUser) {
                     Candidate::where('user_id', $existingUser->id)->delete();
                     $existingUser->delete();
                 }
+
                 $user = User::create([
                     'name' => $request->name,
                     'email' => $request->email,
                     'password' => bcrypt($request->password),
                     'user_type' => 'candidate',
                 ]);
-        
-                $condidate = Candidate::create([
+
+                Candidate::create([
                     'user_id' => $user->id,
                     'phone' => $request->phone,
                     'location' => $request->location,
                     'experience_level' => $request->experience_level,
                     'work_type' => $request->work_type,
                 ]);
-                Auth::login($user);
             });
+
+            Auth::login($user);
+
             return redirect()->route('candidate.jobs.index')->with('success', 'Registration successful!');
-        }catch(Exception $e){
+        } catch (Exception $e) {
             return back()->with('error', 'Registration failed: ' . $e->getMessage());
         }
     }

@@ -12,6 +12,8 @@ use App\Http\Controllers\ApplicationController;
 use App\Http\Controllers\ConversationController;
 use App\Http\Controllers\MessageController;
 use App\Http\Controllers\Auth\PasswordResetLinkController;
+use Illuminate\Support\Facades\Auth;
+use App\Models\Job;
 
 Route::get('/', function () {
     if (auth()->check()){
@@ -46,7 +48,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-    Route::get('/logout', [LoginController::class, 'logout'])->name('employer.logout');
+    Route::post('/logout', [LoginController::class, 'logout'])->name('employer.logout');
 });
 
 Route::middleware(['auth', Employer::class])->group(function() {
@@ -111,6 +113,24 @@ Route::middleware(['auth', IsAdmin::class])->prefix('admin')->name('admin.')->gr
     Route::post('/applications/{id}/update-status', [App\Http\Controllers\AdminController::class, 'updateApplicationStatus'])->name('applications.update-status');
     Route::delete('/applications/{id}', [App\Http\Controllers\AdminController::class, 'deleteApplication'])->name('applications.delete');
 });
+
+
+Route::get('/notifications/job/{notification}', function ($jobId) {
+    $user = Auth::user();
+
+    $notification = $user->notifications()
+        ->where('data->job_id', $jobId)
+        ->first();
+
+    if ($notification && $notification->unread()) {
+        $notification->markAsRead();
+    }
+
+    $job = Job::findOrFail($jobId);
+
+    return view('candidate.jobs.single', compact('job'));
+})->middleware('auth')->name('notifications.viewJob');
+
 
 Route::get('/admin-test', function () {
     return 'Admin middleware is working correctly!';
